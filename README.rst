@@ -1,3 +1,3 @@
 pyexpertsender
 ==============
-Python wrapper for ExpertSender API
+Unofficial Python wrapper for ExpertSender API
