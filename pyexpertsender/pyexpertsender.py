@@ -12,6 +12,7 @@ class PyExpertSender:
         self.api_key = api_key
         self.subscribers = PyExpertSender.Subscribers(api_url, api_key)
         self.lists = PyExpertSender.Lists(api_url, api_key)
+        self.fields = PyExpertSender.Fields(api_url, api_key)
 
     class Lists:
         path = '/Api/Lists'
@@ -82,3 +83,29 @@ class PyExpertSender:
                 url,
                 data=xml
             ).text
+
+    class Fields:
+        path = '/Api/Fields'
+
+        def __init__(self, api_url, api_key):
+            self.api_url = api_url
+            self.api_key = api_key
+
+        def parse_xml(self, xml):
+            return {
+                'id': xml['Id'],
+                'name': xml['Name'],
+                'friendly_name': xml.get('FriendlyName', ''),
+                'type': xml['Type']
+            }
+
+        def get(self, seed_lists=False):
+            url = furl(self.api_url)
+            url.path = self.path
+            url.args = {
+                'apiKey': self.api_key
+            }
+            return [
+                self.parse_xml(x)
+                for x in xmltodict.parse(requests.request('GET', url.url).text)['ApiResponse']['Data']['Fields']['Field']
+            ]
