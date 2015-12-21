@@ -8,23 +8,22 @@ def camel_case(word):
     return ''.join(x.capitalize() or '_' for x in word.split('_'))
 
 
-def generate_entity(data_dict, data_type, parent, name='Data'):
-        data = ET.SubElement(parent, camel_case(name))
-        if data_type:
-            data.set('xsi:type', data_type)
-
-        if isinstance(data_dict, dict):
-            for key, value in data_dict.iteritems():
-                if isinstance(value, dict):
-                    generate_entity(value['data'], value.get('type', ''), data, key)
-                elif isinstance(value, list):
-                    for item in value:
-                        generate_entity(item, data_type, data, key)
-                else:
-                    ET.SubElement(data, camel_case(key)).text = unicode(value)
-        else:
-            ET.SubElement(data, camel_case(name)).text = unicode(data_dict)
-        return data
+def generate_entity(data, parent):
+    if isinstance(data, dict):
+        for key, data in data.iteritems():
+            if key == 'text':
+                parent.text = unicode(data)
+            elif key == 'attrs':
+                for attr, val in data.iteritems():
+                    parent.set('xsi:' + attr, val)
+            else:
+                child = ET.SubElement(parent, camel_case(key))
+                generate_entity(data, child)
+    elif isinstance(data, list):
+        for value in data:
+            generate_entity(value, parent)
+    else:
+        parent.text = unicode(data)
 
 
 def generate_request_xml(api_key, data_type, dict_tree):
@@ -33,6 +32,7 @@ def generate_request_xml(api_key, data_type, dict_tree):
     root.set('xmlns:xs', xs)
     api_key_element = ET.SubElement(root, 'ApiKey')
     api_key_element.text = api_key
-    generate_entity(dict_tree, data_type, root)
+    dict_tree['attrs'] = {'type': 'Subscriber'}
+    generate_entity({'data': dict_tree}, root)
 
     return ET.tostring(root)
