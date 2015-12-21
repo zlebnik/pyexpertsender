@@ -70,7 +70,11 @@ class PyExpertSender:
                 'lastname': kwargs.get('lastname', ''),
                 'name': kwargs.get('name', ''),
                 'mode': kwargs.get('mode', 'AddAndUpdate'),
-
+                'tracking_code': kwargs.get('tracking_code', ''),
+                'properties': {
+                    'data': {'property': kwargs.get('customs', [])},
+                    'type': 'complex'
+                }
             }
 
             xml = self.get_subscriber_xml(data)
