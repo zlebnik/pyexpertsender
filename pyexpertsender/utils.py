@@ -10,12 +10,13 @@ def camel_case(word):
 
 def generate_entity(data_dict, data_type, parent, name='Data'):
         data = ET.SubElement(parent, camel_case(name))
-        data.set('xsi:type', data_type)
+        if data_type:
+            data.set('xsi:type', data_type)
 
         if isinstance(data_dict, dict):
             for key, value in data_dict.iteritems():
                 if isinstance(value, dict):
-                    generate_entity(value['data'], value['type'], data, key)
+                    generate_entity(value['data'], value.get('type', ''), data, key)
                 elif isinstance(value, list):
                     for item in value:
                         generate_entity(item, data_type, data, key)

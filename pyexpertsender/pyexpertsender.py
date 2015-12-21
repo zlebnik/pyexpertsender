@@ -72,8 +72,7 @@ class PyExpertSender:
                 'mode': kwargs.get('mode', 'AddAndUpdate'),
                 'tracking_code': kwargs.get('tracking_code', ''),
                 'properties': {
-                    'data': {'property': kwargs.get('customs', [])},
-                    'type': 'complex'
+                    'data': {'property': kwargs.get('customs', [])}
                 }
             }
 
