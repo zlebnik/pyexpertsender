@@ -57,7 +57,7 @@ class PyExpertSender:
                 'email': email,
                 'option': option
             }
-            requests.request('GET', url.url)
+            return requests.request('GET', url.url)
 
         def get_subscriber_xml(self, subscriber_data):
             return generate_request_xml(self.api_key, 'Subscriber', subscriber_data)
@@ -71,7 +71,8 @@ class PyExpertSender:
                 'name': kwargs.get('name', ''),
                 'mode': kwargs.get('mode', 'AddAndUpdate'),
                 'tracking_code': kwargs.get('tracking_code', ''),
-                'properties': kwargs.get('customs', [])
+                'properties': kwargs.get('customs', []),
+                'vendor': kwargs.get('vendor', '')
             }
 
             xml = self.get_subscriber_xml(data)
