@@ -37,9 +37,14 @@ class PyExpertSender:
                 'apiKey': self.api_key,
                 'seedLists': seed_lists
             }
+            result = xmltodict.parse(requests.request('GET', url.url).text)['ApiResponse']['Data']['Lists']['List']
+
+            if not isinstance(result, list):
+                result = [result]
+
             return [
                 self.parse_xml(x)
-                for x in xmltodict.parse(requests.request('GET', url.url).text)['ApiResponse']['Data']['Lists']['List']
+                for x in result
             ]
 
     class Subscribers:
@@ -107,7 +112,11 @@ class PyExpertSender:
             url.args = {
                 'apiKey': self.api_key
             }
+            result = xmltodict.parse(requests.request('GET', url.url).text)['ApiResponse']['Data']['Fields']['Field']
+            if not isinstance(result, list):
+                result = [result]
+
             return [
                 self.parse_xml(x)
-                for x in xmltodict.parse(requests.request('GET', url.url).text)['ApiResponse']['Data']['Fields']['Field']
+                for x in result
             ]
