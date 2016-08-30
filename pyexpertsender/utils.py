@@ -32,7 +32,8 @@ def generate_request_xml(api_key, data_type, dict_tree):
     root.set('xmlns:xs', xs)
     api_key_element = ET.SubElement(root, 'ApiKey')
     api_key_element.text = api_key
-    dict_tree['attrs'] = {'type': 'Subscriber'}
+    if data_type:
+        dict_tree['attrs'] = {'type': data_type}
     generate_entity({'data': dict_tree}, root)
 
     return ET.tostring(root)

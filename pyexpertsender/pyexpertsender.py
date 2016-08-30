@@ -1,6 +1,4 @@
 from utils import generate_request_xml
-import urlparse
-import urllib
 import requests
 from furl import furl
 import xmltodict
@@ -13,6 +11,7 @@ class PyExpertSender:
         self.subscribers = PyExpertSender.Subscribers(api_url, api_key)
         self.lists = PyExpertSender.Lists(api_url, api_key)
         self.fields = PyExpertSender.Fields(api_url, api_key)
+        self.workflows = PyExpertSender.CustomWorkflows(api_url, api_key)
 
     class Lists:
         path = '/Api/Lists'
@@ -85,11 +84,15 @@ class PyExpertSender:
             url = furl(self.api_url)
             url.path = self.path
 
-            return requests.request(
+            r = requests.request(
                 'POST',
-                url,
+                url.url,
                 data=xml
-            ).text
+            )
+            print xml
+            print r.request
+            print r
+            return r
 
     class Fields:
         path = '/Api/Fields'
@@ -120,3 +123,23 @@ class PyExpertSender:
                 self.parse_xml(x)
                 for x in result
             ]
+
+    class CustomWorkflows:
+        path = '/Api/WorkflowCustomEvents'
+
+        def __init__(self, api_url, api_key):
+            self.api_url = api_url
+            self.api_key = api_key
+
+        def post(self, event_id, email):
+            url = furl(self.api_url)
+            url.path = self.path
+
+            return requests.request(
+                'POST',
+                url.url,
+                data=generate_request_xml(self.api_key, '', {
+                    'Custom_Event_Id': event_id,
+                    'Subscriber_Email': email
+                })
+            )
