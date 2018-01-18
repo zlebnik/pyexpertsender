@@ -12,6 +12,7 @@ class PyExpertSender:
         self.lists = PyExpertSender.Lists(api_url, api_key)
         self.fields = PyExpertSender.Fields(api_url, api_key)
         self.workflows = PyExpertSender.CustomWorkflows(api_url, api_key)
+        self.transactionals = PyExpertSender.TransactionalEmails(api_url, api_key)
 
     class Lists:
         path = '/Api/Lists'
@@ -141,5 +142,32 @@ class PyExpertSender:
                 data=generate_request_xml(self.api_key, '', {
                     'Custom_Event_Id': event_id,
                     'Subscriber_Email': email
+                })
+            )
+
+    class TransactionalEmails:
+        path = '/Api/Transactionals/%d'
+
+        def __init__(self, api_url, api_key):
+            self.api_url = api_url
+            self.api_key = api_key
+
+        def post(self, email_id, email, snippets):
+            url = furl(self.api_url)
+            url.path = self.path
+
+            return requests.request(
+                'POST',
+                url.url % email_id,
+                data=generate_request_xml(self.api_key, '', {
+                    'Receiver': {
+                        'Email': email
+                    },
+                    'Snippets': [
+                        {
+                            'Name': k,
+                            'Value': v
+                        } for (k, v) in snippets.items()
+                    ]
                 })
             )
