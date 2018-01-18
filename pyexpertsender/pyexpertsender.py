@@ -146,7 +146,7 @@ class PyExpertSender:
             )
 
     class TransactionalEmails:
-        path = '/Api/Transactionals/%d'
+        path = '/Api/Transactionals/'
 
         def __init__(self, api_url, api_key):
             self.api_url = api_url
@@ -158,7 +158,7 @@ class PyExpertSender:
 
             return requests.request(
                 'POST',
-                url.url % email_id,
+                url.url + str(email_id),
                 data=generate_request_xml(self.api_key, '', {
                     'Receiver': {
                         'Email': email
