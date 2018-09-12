@@ -1,4 +1,4 @@
-from utils import generate_request_xml
+from .utils import generate_request_xml
 import requests
 from furl import furl
 import xmltodict
@@ -90,9 +90,6 @@ class PyExpertSender:
                 url.url,
                 data=xml
             )
-            print xml
-            print r.request
-            print r
             return r
 
     class Fields:

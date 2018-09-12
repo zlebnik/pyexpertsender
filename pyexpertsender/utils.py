@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+import six
 
 xsi = 'http://www.w3.org/2001/XMLSchema-instance'
 xs = 'http://www.w3.org/2001/XMLSchema'
@@ -10,11 +11,11 @@ def camel_case(word):
 
 def generate_entity(data, parent):
     if isinstance(data, dict):
-        for key, data in data.iteritems():
+        for key, data in data.items():
             if key == 'text':
-                parent.text = unicode(data)
+                parent.text = six.text_type(data)
             elif key == 'attrs':
-                for attr, val in data.iteritems():
+                for attr, val in data.items():
                     parent.set('xsi:' + attr, val)
             else:
                 child = ET.SubElement(parent, camel_case(key))
@@ -23,7 +24,7 @@ def generate_entity(data, parent):
         for value in data:
             generate_entity(value, parent)
     else:
-        parent.text = unicode(data)
+        parent.text = six.text_type(data)
 
 
 def generate_request_xml(api_key, data_type, dict_tree):

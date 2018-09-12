@@ -1,1 +1,1 @@
-from pyexpertsender import PyExpertSender
+from .pyexpertsender import PyExpertSender
