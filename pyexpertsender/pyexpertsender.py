@@ -72,6 +72,10 @@ class PyExpertSender:
             data.setdefault('properties', kwargs.get('customs', []))  # support for legacy parameter `customs`
             data.setdefault('mode', 'AddAndUpdate')
 
+            for k, v in list(data.items()):
+                if v is None:
+                    data.pop(k)
+
             xml = self.get_subscriber_xml(data)
 
             url = furl(self.api_url)
