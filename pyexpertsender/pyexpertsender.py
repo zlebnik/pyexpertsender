@@ -157,9 +157,11 @@ class PyExpertSender:
                         'Email': email
                     },
                     'Snippets': [
-                        {
-                            'Name': k,
-                            'Value': v
+                        {'Snippet':
+                            {
+                                'Name': k,
+                                'Value': v
+                            }
                         } for (k, v) in snippets.items()
                     ]
                 })
