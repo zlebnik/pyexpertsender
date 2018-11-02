@@ -68,17 +68,13 @@ class PyExpertSender:
             return generate_request_xml(self.api_key, 'Subscriber', subscriber_data)
 
         def post_one(self, email, list_id, **kwargs):
-            data = {
-                'email': email,
-                'list_id': list_id,
-                'firstname': kwargs.get('firstname', ''),
-                'lastname': kwargs.get('lastname', ''),
-                'name': kwargs.get('name', ''),
-                'mode': kwargs.get('mode', 'AddAndUpdate'),
-                'tracking_code': kwargs.get('tracking_code', ''),
-                'properties': kwargs.get('customs', []),
-                'vendor': kwargs.get('vendor', '')
-            }
+            data = dict(email=email, list_id=list_id, **kwargs)
+            data.setdefault('properties', kwargs.get('customs', []))  # support for legacy parameter `customs`
+            data.setdefault('mode', 'AddAndUpdate')
+
+            for k, v in list(data.items()):
+                if v is None:
+                    data.pop(k)
 
             xml = self.get_subscriber_xml(data)
 
@@ -161,9 +157,11 @@ class PyExpertSender:
                         'Email': email
                     },
                     'Snippets': [
-                        {
-                            'Name': k,
-                            'Value': v
+                        {'Snippet':
+                            {
+                                'Name': k,
+                                'Value': v
+                            }
                         } for (k, v) in snippets.items()
                     ]
                 })
