@@ -32,11 +32,12 @@ class PyExpertSender:
 
         def get(self, seed_lists=False):
             url = furl(self.api_url)
-            url.path = self.path
-            url.args = {
+            url.path.add(self.path).normalize()
+
+            url.args.update({
                 'apiKey': self.api_key,
                 'seedLists': seed_lists
-            }
+            })
             result = xmltodict.parse(requests.request('GET', url.url).text)['ApiResponse']['Data']['Lists']['List']
 
             if not isinstance(result, list):
@@ -56,12 +57,13 @@ class PyExpertSender:
 
         def get(self, email, option='Long'):
             url = furl(self.api_url)
-            url.path = self.path
-            url.args = {
+            url.path.add(self.path).normalize()
+
+            url.args.update({
                 'apiKey': self.api_key,
                 'email': email,
                 'option': option
-            }
+            })
             return requests.request('GET', url.url)
 
         def get_subscriber_xml(self, subscriber_data):
@@ -79,7 +81,7 @@ class PyExpertSender:
             xml = self.get_subscriber_xml(data)
 
             url = furl(self.api_url)
-            url.path = self.path
+            url.path.add(self.path).normalize()
 
             r = requests.request(
                 'POST',
@@ -105,10 +107,10 @@ class PyExpertSender:
 
         def get(self, seed_lists=False):
             url = furl(self.api_url)
-            url.path = self.path
-            url.args = {
+            url.path.add(self.path).normalize()
+            url.args.update({
                 'apiKey': self.api_key
-            }
+            })
             result = xmltodict.parse(requests.request('GET', url.url).text)['ApiResponse']['Data']['Fields']['Field']
             if not isinstance(result, list):
                 result = [result]
@@ -127,7 +129,7 @@ class PyExpertSender:
 
         def post(self, event_id, email):
             url = furl(self.api_url)
-            url.path = self.path
+            url.path.add(self.path).normalize()
 
             return requests.request(
                 'POST',
@@ -147,7 +149,7 @@ class PyExpertSender:
 
         def post(self, email_id, email, snippets):
             url = furl(self.api_url)
-            url.path = self.path
+            url.path.add(self.path).normalize()
 
             return requests.request(
                 'POST',
